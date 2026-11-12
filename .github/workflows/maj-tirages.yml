@@ -1,0 +1,35 @@
+# Met a jour data/euromillions_202002.csv apres chaque tirage (mardi et vendredi).
+# Les heures sont en UTC. Deux passages par tirage : un le soir meme, un le
+# lendemain matin au cas ou FDJ publie son fichier en retard.
+name: Mise a jour des tirages
+
+on:
+  schedule:
+    - cron: "40 21 * * 2,5"   # mardi et vendredi, 22 h 40 ou 23 h 40 a Paris
+    - cron: "10 6 * * 3,6"    # mercredi et samedi matin
+  workflow_dispatch:           # bouton "Run workflow" pour lancer a la main
+
+permissions:
+  contents: write
+
+jobs:
+  maj:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Telecharger et controler le fichier FDJ
+        run: python scripts/maj_tirages.py
+      - name: Publier si le fichier a change
+        run: |
+          if git diff --quiet -- data/euromillions_202002.csv; then
+            echo "Aucun nouveau tirage."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add data/euromillions_202002.csv
+            git commit -m "Tirages : mise a jour automatique"
+            git push
+          fi
