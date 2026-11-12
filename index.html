@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0d1b2a">
+<meta name="robots" content="noindex, nofollow">
 <title>Grilles Euromillions</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icone-192.png">
@@ -98,7 +99,9 @@ button { cursor: pointer; }
 /* --- Boules et etoiles --- */
 .numeros { display: flex; align-items: center; gap: 6px; }
 .boule, .etoile {
-  flex: 0 1 42px; min-width: 0; aspect-ratio: 1;
+  /* Taille fixe, reduite seulement sur les ecrans etroits (7 pastilles par ligne). */
+  --d: min(42px, calc((100vw - 110px) / 7));
+  flex: none; width: var(--d); height: var(--d);
   display: grid; place-items: center;
   font-family: var(--titre);
   font-weight: 600;
@@ -114,7 +117,7 @@ button { cursor: pointer; }
   font-size: 0.875rem;
   padding-top: 3px;
 }
-.petit .boule, .petit .etoile { flex-basis: 32px; font-size: 0.8125rem; }
+.petit .boule, .petit .etoile { --d: 32px; font-size: 0.8125rem; }
 .petit .etoile { font-size: 0.6875rem; }
 .sep { flex: none; width: 1px; height: 26px; background: var(--trait); margin: 0 2px; }
 

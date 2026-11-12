@@ -1,10 +1,11 @@
 /* Service worker : rend l'appli utilisable hors ligne une fois installee.
-   - data/ (tirages, parametres) : reseau d'abord, pour avoir le dernier
-     tirage ; copie locale si le telephone est hors ligne.
-   - tout le reste (page, scripts Python, moteur Pyodide, polices) : copie
-     locale d'abord, rafraichie en arriere-plan.
-   Changer VERSION force le renouvellement du cache apres une mise a jour. */
-const VERSION = "em-v2";
+   - fichiers de l'appli (page, scripts Python, tirages, parametres) :
+     reseau d'abord, pour toujours avoir la derniere version ; copie locale
+     si le telephone est hors ligne.
+   - moteur Pyodide et polices (autres sites, jamais modifies) : copie
+     locale d'abord.
+   Changer VERSION vide l'ancien cache. */
+const VERSION = "em-v3";
 
 self.addEventListener("install", (e) => { self.skipWaiting(); });
 self.addEventListener("activate", (e) => {
@@ -42,6 +43,6 @@ async function cacheDabord(requete) {
 self.addEventListener("fetch", (e) => {
   if (e.request.method !== "GET") return;
   const url = new URL(e.request.url);
-  const donnees = url.origin === location.origin && url.pathname.includes("/data/");
-  e.respondWith(donnees ? reseauDabord(e.request) : cacheDabord(e.request));
+  const appli = url.origin === location.origin;
+  e.respondWith(appli ? reseauDabord(e.request) : cacheDabord(e.request));
 });
