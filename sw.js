@@ -4,7 +4,7 @@
    - tout le reste (page, scripts Python, moteur Pyodide, polices) : copie
      locale d'abord, rafraichie en arriere-plan.
    Changer VERSION force le renouvellement du cache apres une mise a jour. */
-const VERSION = "em-v1";
+const VERSION = "em-v2";
 
 self.addEventListener("install", (e) => { self.skipWaiting(); });
 self.addEventListener("activate", (e) => {
